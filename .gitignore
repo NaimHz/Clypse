@@ -1,0 +1,39 @@
+# Dependencies
+**/node_modules/
+**/package-lock.json
+**/yarn.lock
+**/yarn-error.log
+
+# Environment variables
+**/.env*
+!**/.env*.example
+
+# Build outputs
+**/dist/
+**/build/
+**/coverage/
+**/.vite/
+**/temp/
+
+# IDE and editor files
+**/.vscode/
+**/.idea/
+**/*.swp
+**/*.swo
+**/.DS_Store
+
+# Logs
+**/*.log
+**/logs/
+
+# Vue specific
+**/types/v3-generated.d.ts
+
+# Node specific
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Temporary files
+**/tmp/
+**/temp/
