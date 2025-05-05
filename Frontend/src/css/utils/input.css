@@ -1,0 +1,12 @@
+input{
+    @apply w-full border-2 border-secondary rounded-default p-2;
+    width: 100%;
+    border: 2px solid var(--color-secondary);
+    border-radius: var(--radius-default);
+    padding: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+input:focus{
+    @apply outline-0 border-brand;
+    border-color: var(--color-brand);
+}

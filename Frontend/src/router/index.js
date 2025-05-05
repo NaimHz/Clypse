@@ -1,29 +1,32 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import SignIn from "../views/SignIn.vue";
+import Register from "../views/Register.vue";
+import Dashboard from "../views/Dashboard.vue";
+import { useAuthStore } from "../stores/auth";
 
 const routes = [
+  { path: "/", name: "SignIn", component: SignIn },
+  { path: "/register", name: "Register", component: Register },
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: "/dashboard",
+    name: "Dashboard",
+    component: Dashboard,
+    // beforeEnter: (to, from, next) => {
+    //   const authStore = useAuthStore();
+    //   if (authStore.isAuthenticated) {
+    //     next();
+    //   } else {
+    //     next("/");
+    //   }
+    // },
   },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register
-  }
-]
+  // Redirection de l'ancien chemin /login vers /
+  { path: "/login", redirect: "/" },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

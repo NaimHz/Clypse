@@ -1,0 +1,10 @@
+@theme {
+  --color-primary: #2a2a2a;
+  --color-secondary: #fff;
+  --color-brand: #9aca28;
+
+  --spacing-mobileHeight: 100dvh;
+  --spacing-mobileWidth: 100dvw;
+
+  --radius-default: 15px;
+}

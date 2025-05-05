@@ -1,17 +1,12 @@
 <template>
   <main class="flex flex-col justify-center items-center">
     <div class="w-full max-w-md px-6 py-8">
-      <h1 class="font-roboto text-3xl text-center mb-4">Inscription</h1>
+      <h1 class="font-roboto text-3xl text-center mb-4">Connexion</h1>
       <div>
         <p class="text-lg mb-4 text-center">
-          Créez un nouveau compte pour continuer.
+          Veuillez vous connecter pour continuer.
         </p>
-        <form @submit.prevent="handleRegister" class="space-y-6">
-          <div>
-            <label class="block mb-2 font-medium">Nom</label>
-            <input type="text" v-model="name" required class="" />
-          </div>
-
+        <form @submit.prevent="handleLogin" class="space-y-6">
           <div>
             <label class="block mb-2 font-medium">Email</label>
             <input type="email" v-model="email" required class="" />
@@ -26,13 +21,13 @@
             {{ authStore.error }}
           </div>
 
-          <button type="submit" class="w-full btn">S'inscrire</button>
+          <button type="submit" class="w-full btn">Se connecter</button>
         </form>
 
         <p class="text-lg mt-6 text-center opacity-85">
-          Déjà inscrit ?
-          <router-link to="/" class="text-brand hover:underline"
-            >Se connecter</router-link
+          Pas encore de compte ?
+          <router-link to="/register" class="text-brand hover:underline"
+            >S'inscrire</router-link
           >
         </p>
       </div>
@@ -41,29 +36,24 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 
 const router = useRouter();
 const authStore = useAuthStore();
 
-const name = ref("");
 const email = ref("");
 const password = ref("");
 
-const handleRegister = async () => {
-  const success = await authStore.register(
-    name.value,
-    email.value,
-    password.value
-  );
+const handleLogin = async () => {
+  const success = await authStore.login(email.value, password.value);
   if (success) {
-    // Après inscription réussie, connecter l'utilisateur
-    const loginSuccess = await authStore.login(email.value, password.value);
-    if (loginSuccess) {
-      router.push("/dashboard");
-    }
+    router.push("/dashboard");
   }
 };
+
+onMounted(() => {
+  authStore.checkAuth();
+});
 </script>
