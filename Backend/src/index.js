@@ -8,7 +8,6 @@ let server;
 mongoose.connect(config.mongoose.url, config.mongoose.options).then(async () => {
   logger.info('Connected to MongoDB');
 
-  // Seed initial data
   await seedVapes();
 
   server = app.listen(config.port, () => {

@@ -18,44 +18,20 @@ const createVape = async (vapeBody) => {
   return Vape.create(vapeBody);
 };
 
-/**
- * Query for vapes
- * @param {Object} filter - Mongo filter
- * @param {Object} options - Query options
- * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
- * @param {number} [options.limit] - Maximum number of results per page (default = 10)
- * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise<QueryResult>}
- */
 const queryVapes = async (filter, options) => {
   const vapes = await Vape.paginate(filter, options);
   return vapes;
 };
 
-/**
- * Get vape by id
- * @param {ObjectId} id
- * @returns {Promise<Vape>}
- */
+
 const getVapeById = async (id) => {
   return Vape.findById(id);
 };
 
-/**
- * Get vape by code
- * @param {string} code
- * @returns {Promise<Vape>}
- */
 const getVapeByCode = async (code) => {
   return Vape.findOne({ code });
 };
 
-/**
- * Update vape by id
- * @param {ObjectId} vapeId
- * @param {Object} updateBody
- * @returns {Promise<Vape>}
- */
 const updateVapeById = async (vapeId, updateBody) => {
   const vape = await getVapeById(vapeId);
   if (!vape) {
@@ -72,12 +48,6 @@ const updateVapeById = async (vapeId, updateBody) => {
   return vape;
 };
 
-/**
- * Link vape to user
- * @param {string} code
- * @param {ObjectId} userId
- * @returns {Promise<Vape>}
- */
 const linkVapeToUser = async (code, userId) => {
   const vape = await getVapeByCode(code);
   if (!vape) {
@@ -93,12 +63,6 @@ const linkVapeToUser = async (code, userId) => {
   return vape;
 };
 
-/**
- * Unlink vape from user
- * @param {ObjectId} vapeId
- * @param {ObjectId} userId
- * @returns {Promise<Vape>}
- */
 const unlinkVapeFromUser = async (vapeId, userId) => {
   const vape = await getVapeById(vapeId);
   if (!vape) {
@@ -114,11 +78,6 @@ const unlinkVapeFromUser = async (vapeId, userId) => {
   return vape;
 };
 
-/**
- * Delete vape by id
- * @param {ObjectId} vapeId
- * @returns {Promise<Vape>}
- */
 const deleteVapeById = async (vapeId) => {
   const vape = await getVapeById(vapeId);
   if (!vape) {
@@ -128,27 +87,16 @@ const deleteVapeById = async (vapeId) => {
   return vape;
 };
 
-/**
- * Get vapes by user id
- * @param {ObjectId} userId
- * @returns {Promise<Vape[]>}
- */
 const getVapesByUserId = async (userId) => {
   return Vape.find({ userId });
 };
 
-/**
- * Generate a unique vape code that doesn't already exist in the database
- * @returns {Promise<string>}
- */
 const generateNewVapeCode = async () => {
   let isUnique = false;
   let code;
 
-  // Try to generate a unique code up to 10 times
   for (let attempt = 0; attempt < 10; attempt++) {
     code = generateUniqueVapeCode();
-    // eslint-disable-next-line no-await-in-loop
     const existingVape = await Vape.findOne({ code });
     if (!existingVape) {
       isUnique = true;

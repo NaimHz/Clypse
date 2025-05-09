@@ -1,7 +1,7 @@
 body {
-  @apply font-roboto bg-primary text-secondary;
+    @apply font-roboto bg-primary text-secondary;
 }
 
 main {
-  @apply w-mobileWidth h-mobileHeight;
+    @apply w-mobileWidth h-mobileHeight px-default;
 }

@@ -1,3 +1,11 @@
-module.exports.Token = require('./token.model');
-module.exports.User = require('./user.model');
-module.exports.Vape = require('./vape.model');
+const User = require('./user.model');
+const Vape = require('./vape.model');
+const Token = require('./token.model');
+const Consumption = require('./consumption.model');
+
+module.exports = {
+  User,
+  Vape,
+  Token,
+  Consumption,
+};

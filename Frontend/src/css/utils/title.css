@@ -3,4 +3,16 @@ h1 {
     font-weight: 700;
 }
 
+h2 {
+    font-family: "Co Headline Regular", sans-serif;
+    font-size: 2.25rem;
+    letter-spacing: 0.025em;
+}
 
+.title-gradient {
+    background: linear-gradient(to right, #ffffff, var(--color-brand));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}

@@ -1,133 +1,229 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Tableau de bord</h1>
+  <main class="flex flex-col items-center">
+    <div class="w-full max-w-md mx-auto px-2 py-4 sm:px-4 sm:py-8">
+      <PageTitle tag="h1" size="medium">Mes Clyps</PageTitle>
 
-    <!-- Section pour lier une nouvelle vape -->
-    <div class=" p-6 rounded-lg shadow mb-8">
-      <h2 class="text-2xl font-semibold mb-4">
-        Lier une cigarette électronique
-      </h2>
-      <div class="max-w-md">
-        <form @submit.prevent="handleLinkVape" class="space-y-4">
-          <div>
-            <label class="block mb-2 font-medium"
-              >Code de la cigarette électronique</label
-            >
-            <input
-              type="text"
-              v-model="vapeCode"
-              placeholder="Entrez le code de votre appareil"
-              required
-              class="w-full px-4 py-2 border rounded-md"
-            />
+      <!-- Consommation globale -->
+      <div v-if="vapes.length > 0" class="mb-6 bg-white/15 p-4 rounded-default">
+        <h3 class="text-base font-bold mb-3 text-center">
+          Consommation journalière
+        </h3>
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-400">Bouffées aujourd'hui</span>
+            <span class="text-lg font-bold">{{ totalPuffs }}</span>
           </div>
-
-          <div v-if="vapeStore.error" class="text-red-500 text-sm">
-            {{ vapeStore.error }}
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-400">Moyenne par jour</span>
+            <span class="text-lg font-bold">{{ dailyAverage }}</span>
           </div>
-
-          <button
-            type="submit"
-            class="btn w-full"
-            :disabled="vapeStore.loading"
-          >
-            <span v-if="vapeStore.loading">Liaison en cours...</span>
-            <span v-else>Lier l'appareil</span>
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <div class="p-6 rounded-lg shadow">
-      <h2 class="text-2xl font-semibold mb-4">Mes cigarettes électroniques</h2>
-
-      <div v-if="vapeStore.loading" class="text-center py-4">Chargement...</div>
-
-      <div
-        v-else-if="vapeStore.vapes.length === 0"
-        class="text-center py-4 text-gray-500"
-      >
-        Aucune cigarette électronique liée à votre compte.
-      </div>
-
-      <div v-else class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div
-          v-for="vape in vapeStore.vapes"
-          :key="vape.id"
-          class="border rounded-lg p-4 hover:shadow-md transition-shadow"
-        >
-          <div class="flex justify-between items-start">
-            <div>
-              <h3 class="font-bold text-lg">
-                {{ vape.brand }} {{ vape.model }}
-              </h3>
-              <p class="text-sm text-gray-600">Code: {{ vape.code }}</p>
-              <p class="text-sm text-gray-600">
-                N° Série: {{ vape.serialNumber }}
-              </p>
-              <p class="mt-2">
-                <span class="font-medium">Batterie:</span>
-                <span :class="getBatteryColorClass(vape.batteryLevel)">
-                  {{ vape.batteryLevel }}%
-                </span>
-              </p>
-              <p class="text-sm text-gray-600 mt-1">
-                Dernière synchronisation: {{ formatDate(vape.lastSyncDate) }}
-              </p>
-            </div>
-
-            <button
-              @click="handleUnlinkVape(vape.id)"
-              class="text-red-500 hover:text-red-700"
-              :disabled="vapeStore.loading"
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-400">Variation journalière</span>
+            <span
+              class="text-lg font-bold"
+              :class="{
+                'text-green-500': puffVariation > 0,
+                'text-red-500': puffVariation < 0,
+              }"
             >
-              Détacher
-            </button>
+              {{ puffVariation > 0 ? '+' : '' }}{{ puffVariation }}%
+            </span>
           </div>
         </div>
       </div>
+
+      <!-- Limite de consommation -->
+      <div v-if="vapes.length > 0" class="mb-6 bg-white/15 p-4 rounded-default">
+        <h3 class="text-base font-bold mb-3 text-center">
+          Limite mensuelle de consommation
+        </h3>
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-400">Limite de bouffées par mois</span>
+            <span class="text-lg font-bold">{{ user?.monthlyPuffLimit || 0 }} bouffées</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-400">Niveau de vapotage</span>
+            <span class="text-lg font-bold">{{ getVapingLevelLabel(user?.vapingLevel) }}</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-400">Progression du mois</span>
+            <span
+              class="text-lg font-bold"
+              :class="{
+                'text-green-500': monthlyProgress < 80,
+                'text-yellow-500': monthlyProgress >= 80 && monthlyProgress < 100,
+                'text-red-500': monthlyProgress >= 100
+              }"
+            >
+              {{ monthlyProgress }}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulaire de liaison -->
+      <div class="mb-6 bg-white/15 p-4 rounded-default">
+        <h3 class="text-base font-bold mb-3 text-center">
+          Lier une nouvelle Clyps
+        </h3>
+        <form @submit.prevent="handleLink" class="flex flex-col gap-3">
+          <input
+            v-model="linkCode"
+            type="text"
+            placeholder="Code de la Clyps"
+            class="input w-full text-sm"
+            :class="{ 'border-red-500': linkError }"
+          />
+          <button type="submit" class="btn w-full" :disabled="loading">
+            {{ loading ? "Liaison..." : "Lier" }}
+          </button>
+        </form>
+        <p v-if="linkError" class="text-red-500 text-xs mt-2 text-center">
+          {{ linkError }}
+        </p>
+      </div>
+
+      <!-- Liste des vapes -->
+      <div
+        v-if="vapes.length === 0"
+        class="text-center py-8 bg-white/15 rounded-default"
+      >
+        <p class="text-gray-500">Aucune vape liée à votre compte</p>
+      </div>
+      <div v-else class="flex flex-col gap-4">
+        <VapeCard
+          v-for="vape in vapes"
+          :key="vape._id"
+          :vape="vape"
+          @click="goToVapeDetails"
+          @unlinked="handleUnlinked"
+        />
+      </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { onMounted, ref, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
+import { useConsumptionStore } from "../stores/consumption";
 import { useVapeStore } from "../stores/vape";
+import VapeCard from "../components/VapeCard.vue";
+import PageTitle from "../components/PageTitle.vue";
 
+const router = useRouter();
 const authStore = useAuthStore();
+const consumptionStore = useConsumptionStore();
 const vapeStore = useVapeStore();
-const vapeCode = ref("");
+const vapes = ref([]);
+const linkCode = ref("");
+const linkError = ref("");
+const loading = ref(false);
+const user = ref(null);
+
+// Calcul des statistiques globales
+const totalPuffs = computed(() => {
+  return vapes.value.reduce((total, vape) => {
+    return total + (vape.stats?.totalPuffs || 0);
+  }, 0);
+});
+
+const dailyAverage = computed(() => {
+  return vapes.value.reduce((total, vape) => {
+    return total + (vape.stats?.dailyAverage || 0);
+  }, 0);
+});
+
+const puffVariation = computed(() => {
+  return (
+    vapes.value.reduce((total, vape) => {
+      return total + (vape.stats?.puffVariation || 0);
+    }, 0) / (vapes.value.length || 1)
+  );
+});
+
+const monthlyProgress = computed(() => {
+  if (!user.value?.monthlyPuffLimit) return 0;
+  return Math.round((totalPuffs.value / user.value.monthlyPuffLimit) * 100);
+});
+
+const getVapingLevelLabel = (level) => {
+  const labels = {
+    occasional: 'Vapoteur occasionnel',
+    moderate: 'Vapoteur modéré',
+    frequent: 'Vapoteur fréquent',
+    heavy: 'Vapoteur intensif'
+  };
+  return labels[level] || 'Non défini';
+};
 
 onMounted(async () => {
   authStore.checkAuth();
-  await vapeStore.getUserVapes();
+  user.value = authStore.user;
+  await loadVapes();
 });
 
-const handleLinkVape = async () => {
-  if (vapeCode.value.trim()) {
-    const success = await vapeStore.linkVape(vapeCode.value);
-    if (success) {
-      vapeCode.value = "";
+const loadVapes = async () => {
+  try {
+    const userVapes = await vapeStore.getUserVapes();
+    if (!userVapes || userVapes.length === 0) {
+      vapes.value = [];
+      return;
     }
+    const vapesWithStats = await Promise.all(
+      userVapes.map(async (vape) => {
+        try {
+          const vapeId = vape._id || vape.id;
+          if (!vapeId) return null;
+          const stats = await consumptionStore.fetchDailyStats(vapeId);
+          return {
+            ...vape,
+            _id: vapeId,
+            stats,
+          };
+        } catch (error) {
+          return {
+            ...vape,
+            _id: vape._id || vape.id,
+            stats: null,
+          };
+        }
+      })
+    );
+    vapes.value = vapesWithStats.filter((vape) => vape !== null);
+  } catch (error) {
+    vapes.value = [];
   }
 };
 
-const handleUnlinkVape = async (vapeId) => {
-  if (confirm("Êtes-vous sûr de vouloir détacher cet appareil ?")) {
-    await vapeStore.unlinkVape(vapeId);
+const handleLink = async () => {
+  if (!linkCode.value) {
+    linkError.value = "Veuillez entrer un code";
+    return;
+  }
+
+  loading.value = true;
+  linkError.value = "";
+
+  try {
+    await vapeStore.linkVape(linkCode.value);
+    linkCode.value = "";
+    await loadVapes();
+  } catch (error) {
+    linkError.value = error.message || "Erreur lors de la liaison";
+  } finally {
+    loading.value = false;
   }
 };
 
-const formatDate = (dateString) => {
-  if (!dateString) return "Jamais";
-  const date = new Date(dateString);
-  return date.toLocaleString();
+const goToVapeDetails = (vapeId) => {
+  if (!vapeId) return;
+  router.push({ name: "vape-details", params: { vapeId: String(vapeId) } });
 };
 
-const getBatteryColorClass = (level) => {
-  if (level <= 20) return "text-red-600";
-  if (level <= 50) return "text-yellow-600";
-  return "text-green-600";
+const handleUnlinked = async (vapeId) => {
+  await loadVapes();
 };
 </script>

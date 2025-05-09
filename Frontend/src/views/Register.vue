@@ -1,7 +1,7 @@
 <template>
   <main class="flex flex-col justify-center items-center">
     <div class="w-full max-w-md px-6 py-8">
-      <h1 class="font-roboto text-3xl text-center mb-4">Inscription</h1>
+      <PageTitle tag="h2" size="medium" centered>Inscription</PageTitle>
       <div>
         <p class="text-lg mb-4 text-center">
           Créez un nouveau compte pour continuer.
@@ -44,6 +44,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
+import PageTitle from "../components/PageTitle.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();

@@ -36,9 +36,9 @@ const vapeSchema = mongoose.Schema(
     },
     batteryLevel: {
       type: Number,
+      required: true,
       min: 0,
       max: 100,
-      default: 100,
     },
     isActive: {
       type: Boolean,
@@ -47,6 +47,71 @@ const vapeSchema = mongoose.Schema(
     lastSyncDate: {
       type: Date,
       default: null,
+    },
+    lastMaintenance: {
+      type: Date,
+      default: null,
+    },
+    nextMaintenance: {
+      type: Date,
+      default: null,
+    },
+    coil: {
+      resistance: {
+        type: Number,
+        default: null, // en ohms
+      },
+      installedAt: {
+        type: Date,
+        default: null,
+      },
+      lifespan: {
+        type: Number,
+        default: null, // en jours
+      }
+    },
+    hardwareInfo: {
+      firmwareVersion: {
+        type: String,
+        default: '1.0.0',
+      }
+    },
+    temperatureSettings: {
+      current: {
+        type: Number,
+        default: 200, // en degrés Celsius
+      },
+      min: {
+        type: Number,
+        default: 100,
+      },
+      max: {
+        type: Number,
+        default: 300,
+      },
+    },
+    warranty: {
+      startDate: {
+        type: Date,
+        default: Date.now,
+      },
+      endDate: {
+        type: Date,
+        default: () => {
+          const date = new Date();
+          date.setFullYear(date.getFullYear() + 1);
+          return date;
+        },
+      },
+      isActive: {
+        type: Boolean,
+        default: true,
+      },
+    },
+    status: {
+      type: String,
+      enum: ['active', 'maintenance', 'repair', 'retired'],
+      default: 'active',
     },
   },
   {
@@ -58,31 +123,16 @@ const vapeSchema = mongoose.Schema(
 vapeSchema.plugin(toJSON);
 vapeSchema.plugin(paginate);
 
-/**
- * Check if code is already taken
- * @param {string} code - The vape's unique code
- * @param {ObjectId} [excludeVapeId] - The id of the vape to be excluded
- * @returns {Promise<boolean>}
- */
 vapeSchema.statics.isCodeTaken = async function (code, excludeVapeId) {
   const vape = await this.findOne({ code, _id: { $ne: excludeVapeId } });
   return !!vape;
 };
 
-/**
- * Check if serial number is already taken
- * @param {string} serialNumber - The vape's serial number
- * @param {ObjectId} [excludeVapeId] - The id of the vape to be excluded
- * @returns {Promise<boolean>}
- */
 vapeSchema.statics.isSerialNumberTaken = async function (serialNumber, excludeVapeId) {
   const vape = await this.findOne({ serialNumber, _id: { $ne: excludeVapeId } });
   return !!vape;
 };
 
-/**
- * @typedef Vape
- */
 const Vape = mongoose.model('Vape', vapeSchema);
 
 module.exports = Vape;

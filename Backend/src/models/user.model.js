@@ -40,9 +40,27 @@ const userSchema = mongoose.Schema(
       enum: roles,
       default: 'user',
     },
+    hasCompletedForm: {
+      type: Boolean,
+      default: false,
+    },
+    objectives: {
+      type: Number,
+      default: 0,
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,
+    },
+    monthlyPuffLimit: {
+      type: Number,
+      default: 1000, // Limite par défaut de 1000 bouffées par mois
+      min: 0,
+    },
+    vapingLevel: {
+      type: String,
+      enum: ['occasional', 'moderate', 'frequent', 'heavy'],
+      default: 'moderate',
     },
   },
   {

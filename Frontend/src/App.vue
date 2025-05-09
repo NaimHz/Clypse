@@ -1,10 +1,11 @@
 <script setup>
 import { useAuthStore } from "./stores/auth";
-import { onMounted, onUnmounted } from "vue";
-import Navbar from "./components/Navbar.vue";
+import { onMounted, onUnmounted, computed } from "vue";
 import "./css/tailwind.css";
+import Header from './components/Header.vue';
 
 const authStore = useAuthStore();
+const isAuthenticated = computed(() => authStore.isAuthenticated);
 
 const checkAuth = () => {
   authStore.checkAuth();
@@ -21,8 +22,26 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Navbar />
-  <router-view />
+  <div class="min-h-screen bg-default text-white">
+    <div :class="{ 'pb-24': isAuthenticated }">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </div>
+    <Header v-if="isAuthenticated" />
+  </div>
 </template>
 
-<style></style>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

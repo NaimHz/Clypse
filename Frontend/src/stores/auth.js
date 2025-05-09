@@ -1,12 +1,36 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import router from "../router";
+
+function parseJwt(token) {
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch (e) {
+    return null;
+  }
+}
+
+function isTokenExpired(token) {
+  const payload = parseJwt(token);
+  if (!payload || !payload.exp) return true;
+  return Date.now() >= payload.exp * 1000;
+}
 
 export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = ref(false);
   const error = ref("");
 
   const checkAuth = () => {
-    isAuthenticated.value = !!localStorage.getItem("accessToken");
+    const token = localStorage.getItem("accessToken");
+    if (!token || isTokenExpired(token)) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      isAuthenticated.value = false;
+      router.push("/signin");
+      return false;
+    }
+    isAuthenticated.value = true;
+    return true;
   };
 
   const login = async (email, password) => {
