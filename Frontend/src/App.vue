@@ -23,7 +23,7 @@ onUnmounted(() => {
 
 <template>
   <div class="min-h-screen bg-default text-white">
-    <div :class="{ 'pb-24': isAuthenticated }">
+    <div :class="{ 'pb-20': isAuthenticated }">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />

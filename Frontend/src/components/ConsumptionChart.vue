@@ -1,85 +1,106 @@
 <template>
-  <div>
-    <canvas ref="chartRef" class="w-full h-56 sm:h-64 md:h-72"></canvas>
-    <div v-if="!hasData" class="text-center text-gray-400 mt-4">
-      Aucune donnée de consommation récente.
+  <div class="w-full">
+    <div class="h-64">
+      <canvas ref="chartCanvas"></canvas>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch, computed } from "vue";
-import Chart from "chart.js/auto";
+import { ref, onMounted, watch } from 'vue';
+import Chart from 'chart.js/auto';
 
 const props = defineProps({
   stats: {
     type: Object,
-    required: true,
+    required: true
   },
+  type: {
+    type: String,
+    default: 'puffs',
+    validator: (value) => ['puffs', 'sessions'].includes(value)
+  }
 });
 
-const chartRef = ref(null);
-let chartInstance = null;
+const chartCanvas = ref(null);
+let chart = null;
 
-const hasData = computed(() => {
-  return (
-    props.stats &&
-    props.stats.daily &&
-    props.stats.daily.length > 0 &&
-    props.stats.daily.some((item) => item.puffs > 0)
-  );
-});
+const createChart = (data) => {
+  if (chart) {
+    chart.destroy();
+  }
 
-const renderChart = () => {
-  if (!hasData.value) return;
-  const labels = props.stats.daily.map((item) => item.date);
-  const data = props.stats.daily.map((item) => item.puffs);
-  if (chartInstance) chartInstance.destroy();
-  chartInstance = new Chart(chartRef.value, {
-    type: "bar",
+  const ctx = chartCanvas.value.getContext('2d');
+  const labels = data.map(item => {
+    const date = new Date(item.date);
+    return date.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' });
+  });
+
+  const values = data.map(item => props.type === 'puffs' ? item.puffs : item.sessions);
+
+  chart = new Chart(ctx, {
+    type: 'line',
     data: {
       labels,
       datasets: [
         {
-          label: "Bouffées par jour",
-          data,
-          backgroundColor: "rgba(59, 130, 246, 0.7)",
-          borderRadius: 8,
-          maxBarThickness: 32,
-        },
-      ],
+          label: props.type === 'puffs' ? 'Bouffées' : 'Sessions',
+          data: values,
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.4,
+          fill: true
+        }
+      ]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
-        title: { display: false },
-        tooltip: {
-          callbacks: {
-            label: (ctx) =>
-              `${ctx.parsed.y} bouffée${ctx.parsed.y > 1 ? "s" : ""}`,
-          },
-        },
+        legend: {
+          display: false
+        }
       },
       scales: {
-        x: {
-          title: { display: false },
-          grid: { display: false },
-          ticks: { color: "#64748b", font: { size: 12 } },
-        },
         y: {
-          title: { display: false },
           beginAtZero: true,
-          grid: { color: "#e5e7eb" },
-          ticks: { color: "#64748b", font: { size: 12 }, stepSize: 1 },
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          },
+          ticks: {
+            color: '#9CA3AF'
+          }
         },
-      },
-    },
+        x: {
+          grid: {
+            color: 'rgba(255, 255, 255, 0.1)'
+          },
+          ticks: {
+            color: '#9CA3AF'
+          }
+        }
+      }
+    }
   });
 };
 
-onMounted(renderChart);
-watch(() => props.stats, renderChart, { deep: true });
+watch(() => props.type, () => {
+  if (props.stats?.daily) {
+    createChart(props.stats.daily);
+  }
+});
+
+watch(() => props.stats, (newStats) => {
+  if (newStats?.daily) {
+    createChart(newStats.daily);
+  }
+}, { deep: true });
+
+onMounted(() => {
+  if (props.stats?.daily) {
+    createChart(props.stats.daily);
+  }
+});
 </script>
 
 <style scoped>

@@ -24,49 +24,68 @@ const router = createRouter({
       meta: { requiresAuth: false }
     },
     {
+      path: '/onboarding',
+      name: 'onboarding',
+      component: () => import('../views/Onboarding.vue'),
+      meta: { requiresAuth: true, requiresOnboarding: false }
+    },
+    {
       path: '/dashboard',
       name: 'dashboard',
       component: () => import('../views/Dashboard.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, requiresOnboarding: true }
     },
     {
       path: '/settings',
       name: 'settings',
       component: () => import('../views/Settings.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, requiresOnboarding: true }
     },
     {
       path: '/stats',
       name: 'stats',
       component: () => import('../views/Stats.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, requiresOnboarding: true }
     },
     {
       path: '/vape/:vapeId',
       name: 'vape-details',
       component: () => import('../views/VapeDetails.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, requiresOnboarding: true }
     },
-    {
-      path: '/link',
-      name: 'link',
-      component: () => import('../views/Link.vue'),
-      meta: { requiresAuth: true }
-    }
   ]
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresOnboarding = to.matched.some(record => record.meta.requiresOnboarding);
 
+  // Si l'utilisateur n'est pas connecté et que la route nécessite une authentification
   if (requiresAuth && !authStore.isAuthenticated) {
     next('/signin');
-  } else if (!requiresAuth && authStore.isAuthenticated && (to.name === 'signin' || to.name === 'register')) {
-    next('/dashboard');
-  } else {
-    next();
+    return;
   }
+
+  // Si l'utilisateur est connecté mais n'a pas complété l'onboarding
+  if (requiresOnboarding && !authStore.hasCompletedOnboarding) {
+    next('/onboarding');
+    return;
+  }
+
+  // Si l'utilisateur est connecté et essaie d'accéder aux pages de connexion/inscription
+  if (!requiresAuth && authStore.isAuthenticated && (to.name === 'signin' || to.name === 'register')) {
+    next('/dashboard');
+    return;
+  }
+
+  // Si l'utilisateur a déjà complété l'onboarding et essaie d'y accéder
+  if (to.name === 'onboarding' && authStore.hasCompletedOnboarding) {
+    next('/dashboard');
+    return;
+  }
+
+  next();
 });
 
 export default router;

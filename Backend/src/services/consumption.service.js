@@ -99,10 +99,14 @@ const getDailyStats = async (userId, vapeId, date = new Date()) => {
   const endOfYesterday = new Date(yesterday);
   endOfYesterday.setHours(23, 59, 59, 999);
 
+  // Inclure les sessions actives dans la recherche
   const todaySessions = await Consumption.find({
     userId,
     vapeId,
-    startTime: { $gte: startOfDay, $lte: endOfDay }
+    $or: [
+      { startTime: { $gte: startOfDay, $lte: endOfDay } },
+      { isActive: true }
+    ]
   }).populate('vapeId');
 
   const yesterdaySessions = await Consumption.find({
@@ -128,7 +132,9 @@ const getDailyStats = async (userId, vapeId, date = new Date()) => {
     todaySessions: todaySessions.map(s => ({
       id: s._id,
       vapeId: s.vapeId,
-      batteryLevel: s.vapeId?.batteryLevel
+      batteryLevel: s.vapeId?.batteryLevel,
+      isActive: s.isActive,
+      puffCount: s.puffCount
     }))
   });
 

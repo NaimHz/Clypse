@@ -18,13 +18,17 @@ const app = express();
 
 // enable cors - DOIT ÊTRE PLACÉ EN PREMIER
 const corsOptions = {
-  origin: ['http://localhost:5173'],
+  origin: '*', 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   preflightContinue: false,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
 };
+
+app.get('/', (req, res) => {
+  res.send('API is running');
+});
 
 app.use(cors(corsOptions));
 

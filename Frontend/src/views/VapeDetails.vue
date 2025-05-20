@@ -1,14 +1,11 @@
 <template>
   <main class="flex flex-col items-center">
-    <div
-      class="w-full px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 max-w-2xl mx-auto"
-    >
+    <div class="w-full max-w-md mx-auto px-4 py-8">
       <BackButton to="/dashboard" />
-      <h2 class="text-xl sm:text-2xl font-bold text-center my-4 sm:my-6">
-        {{ vape?.brand }} {{ vape?.model }}
-      </h2>
+      <PageTitle tag="h1" size="medium" centered>{{ vape?.brand }} {{ vape?.model }}</PageTitle>
+
       <div v-if="loading" class="text-center py-8">Chargement...</div>
-      <div v-else-if="vape" class="space-y-6 sm:space-y-8">
+      <div v-else-if="vape" class="space-y-6">
         <VapeHeader :vape="vape" />
         <TemperatureCard :temperature-settings="vape.temperatureSettings" />
         <VapeStats
@@ -20,7 +17,7 @@
           :hardware-info="vape.hardwareInfo"
           :coil="vape.coil"
         />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <MaintenanceCard
             :last-maintenance="vape.lastMaintenance"
             :next-maintenance="vape.nextMaintenance"
@@ -43,10 +40,9 @@
     </div>
     <Modal :show="showModal" @close="showModal = false">
       <template #header>
-        <span
-          class="text-lg font-bold text-blue-600 dark:text-blue-300 w-full text-center block"
-          >Consommation des derniers jours</span
-        >
+        <span class="text-lg font-bold text-blue-600 dark:text-blue-300 w-full text-center block">
+          Consommation des derniers jours
+        </span>
       </template>
       <div v-if="loadingStats" class="text-center py-8">
         Chargement des statistiques...
@@ -70,6 +66,7 @@ import MaintenanceCard from "../components/vape/MaintenanceCard.vue";
 import WarrantyCard from "../components/vape/WarrantyCard.vue";
 import Modal from "../components/Modal.vue";
 import ConsumptionChart from "../components/ConsumptionChart.vue";
+import PageTitle from "../components/PageTitle.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -140,10 +137,19 @@ const handleShowStats = async () => {
 const handleCreatePuff = async () => {
   loading.value = true;
   try {
-    await consumptionStore.createPuff(route.params.vapeId);
-    await loadVapeData();
+    const vapeId = route.params.vapeId;
+    if (!vapeId) {
+      throw new Error("ID de vape manquant");
+    }
+    await consumptionStore.createPuff(vapeId);
+    // Mettre à jour les statistiques immédiatement après la création
+    const updatedStats = await consumptionStore.fetchDailyStats(vapeId);
+    stats.value = updatedStats;
+    // Recharger les données de la vape pour mettre à jour les statistiques globales
+    const updatedVape = await vapeStore.getVapeById(vapeId);
+    vape.value = updatedVape;
   } catch (error) {
-    // Gérer l'erreur si nécessaire
+    console.error('Erreur lors de la création de la bouffée:', error);
   } finally {
     loading.value = false;
   }

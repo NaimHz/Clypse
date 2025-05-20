@@ -3,67 +3,11 @@
     <div class="w-full max-w-md mx-auto px-2 py-4 sm:px-4 sm:py-8">
       <PageTitle tag="h1" size="medium">Mes Clyps</PageTitle>
 
-      <!-- Consommation globale -->
-      <div v-if="vapes.length > 0" class="mb-6 bg-white/15 p-4 rounded-default">
-        <h3 class="text-base font-bold mb-3 text-center">
-          Consommation journalière
-        </h3>
-        <div class="flex flex-col gap-3">
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-gray-400">Bouffées aujourd'hui</span>
-            <span class="text-lg font-bold">{{ totalPuffs }}</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-gray-400">Moyenne par jour</span>
-            <span class="text-lg font-bold">{{ dailyAverage }}</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-gray-400">Variation journalière</span>
-            <span
-              class="text-lg font-bold"
-              :class="{
-                'text-green-500': puffVariation > 0,
-                'text-red-500': puffVariation < 0,
-              }"
-            >
-              {{ puffVariation > 0 ? '+' : '' }}{{ puffVariation }}%
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Limite de consommation -->
-      <div v-if="vapes.length > 0" class="mb-6 bg-white/15 p-4 rounded-default">
-        <h3 class="text-base font-bold mb-3 text-center">
-          Limite mensuelle de consommation
-        </h3>
-        <div class="flex flex-col gap-3">
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-gray-400">Limite de bouffées par mois</span>
-            <span class="text-lg font-bold">{{ user?.monthlyPuffLimit || 0 }} bouffées</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-gray-400">Niveau de vapotage</span>
-            <span class="text-lg font-bold">{{ getVapingLevelLabel(user?.vapingLevel) }}</span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-xs text-gray-400">Progression du mois</span>
-            <span
-              class="text-lg font-bold"
-              :class="{
-                'text-green-500': monthlyProgress < 80,
-                'text-yellow-500': monthlyProgress >= 80 && monthlyProgress < 100,
-                'text-red-500': monthlyProgress >= 100
-              }"
-            >
-              {{ monthlyProgress }}%
-            </span>
-          </div>
-        </div>
-      </div>
-
       <!-- Formulaire de liaison -->
-      <div class="mb-6 bg-white/15 p-4 rounded-default">
+      <div v-if="!addVape" class="mb-6 bg-white/15 p-4 rounded-default">
+        <button class="btn" @click="addVape = true">Ajouter une Clyps</button>
+      </div>
+      <div v-else class="mb-6 bg-white/15 p-4 rounded-default">
         <h3 class="text-base font-bold mb-3 text-center">
           Lier une nouvelle Clyps
         </h3>
@@ -77,6 +21,9 @@
           />
           <button type="submit" class="btn w-full" :disabled="loading">
             {{ loading ? "Liaison..." : "Lier" }}
+          </button>
+          <button type="submit" class="btn btn-secondary w-full" @click="addVape = false">
+             Réduire
           </button>
         </form>
         <p v-if="linkError" class="text-red-500 text-xs mt-2 text-center">
@@ -122,6 +69,7 @@ const linkCode = ref("");
 const linkError = ref("");
 const loading = ref(false);
 const user = ref(null);
+const addVape = ref(false);
 
 // Calcul des statistiques globales
 const totalPuffs = computed(() => {

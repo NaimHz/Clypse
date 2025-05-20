@@ -9,17 +9,17 @@
         <form @submit.prevent="handleRegister" class="space-y-6">
           <div>
             <label class="block mb-2 font-medium">Nom</label>
-            <input type="text" v-model="name" required class="" />
+            <input type="text" v-model="name" required class="input w-full" />
           </div>
 
           <div>
             <label class="block mb-2 font-medium">Email</label>
-            <input type="email" v-model="email" required class="" />
+            <input type="email" v-model="email" required class="input w-full" />
           </div>
 
-          <div class="mb-10">
+          <div>
             <label class="block mb-2 font-medium">Mot de passe</label>
-            <input type="password" v-model="password" required class="" />
+            <input type="password" v-model="password" required class="input w-full" />
           </div>
 
           <div v-if="authStore.error" class="text-red-500 text-sm">
@@ -59,11 +59,11 @@ const handleRegister = async () => {
     email.value,
     password.value
   );
+
   if (success) {
-    // Après inscription réussie, connecter l'utilisateur
     const loginSuccess = await authStore.login(email.value, password.value);
     if (loginSuccess) {
-      router.push("/dashboard");
+      router.push("/onboarding");
     }
   }
 };

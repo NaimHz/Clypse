@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { authService, userService, tokenService, emailService } = require('../services');
+const User = require('../models/user.model');
 
 const register = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -47,6 +48,42 @@ const verifyEmail = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const updateConsumption = async (req, res) => {
+  try {
+    const { vapingLevel, monthlyPuffLimit } = req.body;
+    const userId = req.user.id;
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        vapingLevel,
+        monthlyPuffLimit,
+        onboardingCompleted: true
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    res.json({
+      message: "Préférences de consommation mises à jour avec succès",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        vapingLevel: user.vapingLevel,
+        monthlyPuffLimit: user.monthlyPuffLimit,
+        onboardingCompleted: user.onboardingCompleted
+      }
+    });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour des préférences:", error);
+    res.status(500).json({ message: "Erreur lors de la mise à jour des préférences" });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -56,4 +93,5 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   verifyEmail,
+  updateConsumption,
 };

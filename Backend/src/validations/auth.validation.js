@@ -49,6 +49,13 @@ const verifyEmail = {
   }),
 };
 
+const updateConsumption = {
+  body: Joi.object().keys({
+    vapingLevel: Joi.string().valid('occasional', 'moderate', 'frequent', 'heavy').required(),
+    monthlyPuffLimit: Joi.number().integer().min(0).required(),
+  }),
+};
+
 module.exports = {
   register,
   login,
@@ -57,4 +64,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   verifyEmail,
+  updateConsumption,
 };

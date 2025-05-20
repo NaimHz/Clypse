@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import router from "../router";
 
 function parseJwt(token) {
@@ -17,8 +17,11 @@ function isTokenExpired(token) {
 }
 
 export const useAuthStore = defineStore("auth", () => {
-  const isAuthenticated = ref(false);
+  const user = ref(null);
   const error = ref("");
+  const isAuthenticated = ref(false);
+
+  const hasCompletedOnboarding = computed(() => user.value?.onboardingCompleted || false);
 
   const checkAuth = () => {
     const token = localStorage.getItem("accessToken");
@@ -50,7 +53,7 @@ export const useAuthStore = defineStore("auth", () => {
 
       localStorage.setItem("accessToken", data.tokens.access.token);
       localStorage.setItem("refreshToken", data.tokens.refresh.token);
-
+      user.value = data.user;
       checkAuth();
       return true;
     } catch (err) {
@@ -77,6 +80,7 @@ export const useAuthStore = defineStore("auth", () => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       isAuthenticated.value = false;
+      user.value = null;
     }
   };
 
@@ -95,6 +99,59 @@ export const useAuthStore = defineStore("auth", () => {
         throw new Error(data.message || "Échec de l'inscription");
       }
 
+      localStorage.setItem("accessToken", data.tokens.access.token);
+      localStorage.setItem("refreshToken", data.tokens.refresh.token);
+      user.value = data.user;
+      checkAuth();
+      return true;
+    } catch (err) {
+      error.value = err.message;
+      return false;
+    }
+  };
+
+  const updateConsumption = async (consumptionData) => {
+    error.value = "";
+    try {
+      const response = await fetch("http://localhost:3000/v1/auth/update-consumption", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(consumptionData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Échec de la mise à jour");
+      }
+
+      user.value = data.user;
+      return true;
+    } catch (err) {
+      error.value = err.message;
+      return false;
+    }
+  };
+
+  const fetchUser = async () => {
+    error.value = "";
+    try {
+      const response = await fetch("http://localhost:3000/v1/users/me", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Échec de la récupération des données");
+      }
+
+      user.value = data;
       return true;
     } catch (err) {
       error.value = err.message;
@@ -103,11 +160,15 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   return {
-    isAuthenticated,
+    user,
     error,
+    isAuthenticated,
+    hasCompletedOnboarding,
     checkAuth,
     login,
     logout,
     register,
+    updateConsumption,
+    fetchUser,
   };
 });

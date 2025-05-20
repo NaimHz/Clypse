@@ -1,7 +1,8 @@
 <template>
-  <main class="flex flex-col items-center pb-20">
+  <main class="flex flex-col items-center">
     <div class="w-full max-w-md mx-auto px-4 py-8">
-      <PageTitle tag="h1" size="medium">Mon Profil</PageTitle>
+      <BackButton to="/dashboard" />
+      <PageTitle tag="h1" size="medium" centered>Paramètres</PageTitle>
 
       <!-- Informations personnelles -->
       <div class="bg-white/15 p-6 rounded-default mb-6">
@@ -40,6 +41,23 @@
         <h3 class="text-base font-bold mb-4">Paramètres de consommation</h3>
         <form @submit.prevent="handleUpdateConsumption" class="space-y-4">
           <div>
+            <label class="block text-sm text-gray-400 mb-2">Niveau de vapotage</label>
+            <select
+              v-model="vapingLevel"
+              class="input w-full"
+              :class="{ 'border-red-500': errors.vapingLevel }"
+              @change="handleVapingLevelChange"
+            >
+              <option value="occasional">Vapoteur occasionnel (500 bouffées/mois)</option>
+              <option value="moderate">Vapoteur modéré (1000 bouffées/mois)</option>
+              <option value="frequent">Vapoteur fréquent (2000 bouffées/mois)</option>
+              <option value="heavy">Vapoteur intensif (3000 bouffées/mois)</option>
+              <option value="custom">Personnalisé</option>
+            </select>
+            <p v-if="errors.vapingLevel" class="text-red-500 text-xs mt-1">{{ errors.vapingLevel }}</p>
+          </div>
+
+          <div>
             <label class="block text-sm text-gray-400 mb-2">Limite mensuelle de bouffées</label>
             <input
               v-model="monthlyPuffLimit"
@@ -47,23 +65,9 @@
               min="0"
               class="input w-full"
               :class="{ 'border-red-500': errors.monthlyPuffLimit }"
+              :disabled="vapingLevel !== 'custom'"
             />
             <p v-if="errors.monthlyPuffLimit" class="text-red-500 text-xs mt-1">{{ errors.monthlyPuffLimit }}</p>
-          </div>
-
-          <div>
-            <label class="block text-sm text-gray-400 mb-2">Niveau de vapotage</label>
-            <select
-              v-model="vapingLevel"
-              class="input w-full"
-              :class="{ 'border-red-500': errors.vapingLevel }"
-            >
-              <option value="occasional">Vapoteur occasionnel</option>
-              <option value="moderate">Vapoteur modéré</option>
-              <option value="frequent">Vapoteur fréquent</option>
-              <option value="heavy">Vapoteur intensif</option>
-            </select>
-            <p v-if="errors.vapingLevel" class="text-red-500 text-xs mt-1">{{ errors.vapingLevel }}</p>
           </div>
 
           <button type="submit" class="btn w-full" :disabled="loading">
@@ -75,7 +79,7 @@
       <!-- Changement de mot de passe -->
       <div class="bg-white/15 p-6 rounded-default mb-6">
         <h3 class="text-base font-bold mb-4">Changer le mot de passe</h3>
-        <form @submit.prevent="handleUpdatePassword" class="space-y-4">
+        <form @submit.prevent="handleChangePassword" class="space-y-4">
           <div>
             <label class="block text-sm text-gray-400 mb-2">Mot de passe actuel</label>
             <input
@@ -110,22 +114,19 @@
           </div>
 
           <button type="submit" class="btn w-full" :disabled="loading">
-            {{ loading ? "Mise à jour..." : "Changer le mot de passe" }}
+            {{ loading ? "Mise à jour..." : "Mettre à jour" }}
           </button>
         </form>
       </div>
 
       <!-- Déconnexion -->
-      <div class="bg-white/15 p-6 rounded-default">
-        <h3 class="text-base font-bold mb-4">Déconnexion</h3>
-        <button
-          @click="handleLogout"
-          class="btn w-full bg-red-500 hover:bg-red-600"
-          :disabled="loading"
-        >
-          Se déconnecter
-        </button>
-      </div>
+      <button
+        @click="handleLogout"
+        class="btn btn-danger w-full"
+        :disabled="loading"
+      >
+        Se déconnecter
+      </button>
     </div>
   </main>
 </template>
@@ -135,6 +136,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import PageTitle from '../components/PageTitle.vue';
+import BackButton from '../components/BackButton.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -148,6 +150,19 @@ const email = ref('');
 // Paramètres de consommation
 const monthlyPuffLimit = ref(1000);
 const vapingLevel = ref('moderate');
+
+const vapingLevelLimits = {
+  occasional: 500,
+  moderate: 1000,
+  frequent: 2000,
+  heavy: 3000
+};
+
+const handleVapingLevelChange = () => {
+  if (vapingLevel.value !== 'custom') {
+    monthlyPuffLimit.value = vapingLevelLimits[vapingLevel.value];
+  }
+};
 
 // Changement de mot de passe
 const currentPassword = ref('');
@@ -196,7 +211,7 @@ const handleUpdateConsumption = async () => {
   }
 };
 
-const handleUpdatePassword = async () => {
+const handleChangePassword = async () => {
   loading.value = true;
   errors.value = {};
   try {
