@@ -8,7 +8,8 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import Chart from 'chart.js/auto';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 const props = defineProps({
   stats: {
