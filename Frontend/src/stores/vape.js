@@ -1,14 +1,12 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useAuthStore } from "./auth";
+import { API_BASE_URL, getAuthHeader } from "../config/api";
 
 export const useVapeStore = defineStore("vape", () => {
   const vapes = ref([]);
   const loading = ref(false);
   const error = ref("");
-
-  // URL de l'API backend
-  const apiBaseUrl = "http://localhost:3000/v1";
   const authStore = useAuthStore();
 
   const getUserVapes = async () => {
@@ -22,10 +20,8 @@ export const useVapeStore = defineStore("vape", () => {
       }
 
       console.log("Récupération des vapes avec le token:", token);
-      const response = await fetch(`${apiBaseUrl}/vape/user/vapes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await fetch(`${API_BASE_URL}/vape/user/vapes`, {
+        headers: getAuthHeader(),
       });
 
       console.log("Réponse de l'API:", response.status);
@@ -59,8 +55,8 @@ export const useVapeStore = defineStore("vape", () => {
         throw new Error("Session expirée");
       }
 
-      const response = await fetch(`${apiBaseUrl}/vape/user/vapes`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await fetch(`${API_BASE_URL}/vape/user/vapes`, {
+        headers: getAuthHeader(),
       });
 
       if (!response.ok) {
@@ -96,11 +92,11 @@ export const useVapeStore = defineStore("vape", () => {
         throw new Error("Utilisateur non connecté");
       }
 
-      const response = await fetch(`${apiBaseUrl}/vape/user/link`, {
+      const response = await fetch(`${API_BASE_URL}/vape/user/link`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          ...getAuthHeader(),
         },
         body: JSON.stringify({ code }),
       });
@@ -131,11 +127,9 @@ export const useVapeStore = defineStore("vape", () => {
         throw new Error("Utilisateur non connecté");
       }
 
-      const response = await fetch(`${apiBaseUrl}/vape/user/${vapeId}/unlink`, {
+      const response = await fetch(`${API_BASE_URL}/vape/user/${vapeId}/unlink`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeader(),
       });
 
       if (!response.ok) {

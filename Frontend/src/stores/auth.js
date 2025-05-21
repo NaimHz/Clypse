@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import router from "../router";
+import { API_BASE_URL, getAuthHeader } from "../config/api";
 
 function parseJwt(token) {
   try {
@@ -39,7 +40,7 @@ export const useAuthStore = defineStore("auth", () => {
   const login = async (email, password) => {
     error.value = "";
     try {
-      const response = await fetch("http://localhost:3000/v1/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -64,10 +65,10 @@ export const useAuthStore = defineStore("auth", () => {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:3000/v1/auth/logout", {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          ...getAuthHeader(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -87,7 +88,7 @@ export const useAuthStore = defineStore("auth", () => {
   const register = async (name, email, password) => {
     error.value = "";
     try {
-      const response = await fetch("http://localhost:3000/v1/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -113,10 +114,10 @@ export const useAuthStore = defineStore("auth", () => {
   const updateConsumption = async (consumptionData) => {
     error.value = "";
     try {
-      const response = await fetch("http://localhost:3000/v1/auth/update-consumption", {
+      const response = await fetch(`${API_BASE_URL}/auth/update-consumption`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          ...getAuthHeader(),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(consumptionData),
@@ -139,10 +140,8 @@ export const useAuthStore = defineStore("auth", () => {
   const fetchUser = async () => {
     error.value = "";
     try {
-      const response = await fetch("http://localhost:3000/v1/users/me", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+      const response = await fetch(`${API_BASE_URL}/users/me`, {
+        headers: getAuthHeader(),
       });
 
       const data = await response.json();

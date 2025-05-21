@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { API_BASE_URL, getAuthHeader } from "../config/api";
 
 export const useConsumptionStore = defineStore("consumption", () => {
   const consumptions = ref([]);
   const loading = ref(false);
   const error = ref("");
-  const apiBaseUrl = "http://localhost:3000/v1";
 
   const fetchConsumptions = async () => {
     loading.value = true;
@@ -13,8 +13,8 @@ export const useConsumptionStore = defineStore("consumption", () => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("Utilisateur non connecté");
-      const response = await fetch(`${apiBaseUrl}/consumption`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await fetch(`${API_BASE_URL}/consumption`, {
+        headers: getAuthHeader(),
       });
       if (!response.ok) {
         const data = await response.json();
@@ -41,8 +41,8 @@ export const useConsumptionStore = defineStore("consumption", () => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("Utilisateur non connecté");
-      const response = await fetch(`${apiBaseUrl}/consumption/vape/${vapeId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await fetch(`${API_BASE_URL}/consumption/vape/${vapeId}`, {
+        headers: getAuthHeader(),
       });
       if (!response.ok) {
         const data = await response.json();
@@ -113,9 +113,9 @@ export const useConsumptionStore = defineStore("consumption", () => {
       if (!token) throw new Error("Utilisateur non connecté");
       const formattedDate = date.toISOString().split("T")[0];
       const response = await fetch(
-        `${apiBaseUrl}/consumption/vape/${vapeId}/stats/daily?date=${formattedDate}`,
+        `${API_BASE_URL}/consumption/vape/${vapeId}/stats/daily?date=${formattedDate}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: getAuthHeader(),
         }
       );
       if (!response.ok) {
@@ -143,12 +143,12 @@ export const useConsumptionStore = defineStore("consumption", () => {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("Utilisateur non connecté");
       const response = await fetch(
-        `${apiBaseUrl}/consumption/vape/${vapeId}/puff`,
+        `${API_BASE_URL}/consumption/vape/${vapeId}/puff`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...getAuthHeader(),
           },
         }
       );
