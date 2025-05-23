@@ -25,6 +25,10 @@ const defaultRoutes = [
     path: '/consumption',
     route: consumptionRoute,
   },
+  {
+    path: '/docs',
+    route: docsRoute,
+  },
 ];
 
 const devRoutes = [

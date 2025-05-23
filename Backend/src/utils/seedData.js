@@ -7,7 +7,7 @@ const initialVapes = [
     code: 'CLYPSE001',
     serialNumber: 'SN0001',
     model: 'Pro X',
-    brand: 'Clypse',
+    brand: 'Clyps',
     batteryLevel: 100,
     isActive: true,
     lastMaintenance: new Date('2024-03-01'),
@@ -36,7 +36,7 @@ const initialVapes = [
     code: 'CLYPSE002',
     serialNumber: 'SN0002',
     model: 'Air',
-    brand: 'Clypse',
+    brand: 'Clyps',
     batteryLevel: 85,
     isActive: true,
     lastMaintenance: new Date('2024-02-15'),
@@ -65,7 +65,7 @@ const initialVapes = [
     code: 'CLYPSE003',
     serialNumber: 'SN0003',
     model: 'Starter Kit',
-    brand: 'Clypse',
+    brand: 'Clyps',
     batteryLevel: 100,
     isActive: true,
     lastMaintenance: null,
@@ -94,12 +94,12 @@ const initialVapes = [
     code: 'CLYPSE004',
     serialNumber: 'SN0004',
     model: 'Mini',
-    brand: 'Clypse',
+    brand: 'Clyps',
     batteryLevel: 65,
     isActive: true,
     lastMaintenance: new Date('2024-03-10'),
     nextMaintenance: new Date('2024-06-10'),
-    coil: null, // Pas de résistance connectée
+    coil: null,
     hardwareInfo: {
       firmwareVersion: '2.0.0'
     },
@@ -119,7 +119,7 @@ const initialVapes = [
     code: 'CLYPSE005',
     serialNumber: 'SN0005',
     model: 'Pro X',
-    brand: 'Clypse',
+    brand: 'Clyps',
     batteryLevel: 90,
     isActive: true,
     lastMaintenance: new Date('2024-03-05'),
@@ -144,6 +144,151 @@ const initialVapes = [
     },
     status: 'active',
   },
+  {
+    code: 'CLYPSE006',
+    serialNumber: 'SN0006',
+    model: 'Pro X Plus',
+    brand: 'Clyps',
+    batteryLevel: 75,
+    isActive: true,
+    lastMaintenance: new Date('2024-03-08'),
+    nextMaintenance: new Date('2024-06-08'),
+    coil: {
+      resistance: 0.4,
+      installedAt: new Date('2024-03-18'),
+      lifespan: 10
+    },
+    hardwareInfo: {
+      firmwareVersion: '2.2.0'
+    },
+    temperatureSettings: {
+      current: 230,
+      min: 100,
+      max: 320,
+    },
+    warranty: {
+      startDate: new Date('2024-02-20'),
+      endDate: new Date('2025-02-20'),
+      isActive: true,
+    },
+    status: 'active',
+  },
+  {
+    code: 'CLYPSE007',
+    serialNumber: 'SN0007',
+    model: 'Air Max',
+    brand: 'Clyps',
+    batteryLevel: 45,
+    isActive: true,
+    lastMaintenance: new Date('2024-03-12'),
+    nextMaintenance: new Date('2024-06-12'),
+    coil: {
+      resistance: 0.7,
+      installedAt: new Date('2024-03-20'),
+      lifespan: 18
+    },
+    hardwareInfo: {
+      firmwareVersion: '2.1.5'
+    },
+    temperatureSettings: {
+      current: 195,
+      min: 100,
+      max: 290,
+    },
+    warranty: {
+      startDate: new Date('2024-02-25'),
+      endDate: new Date('2025-02-25'),
+      isActive: true,
+    },
+    status: 'active',
+  },
+  {
+    code: 'CLYPSE008',
+    serialNumber: 'SN0008',
+    model: 'Mini Pro',
+    brand: 'Clyps',
+    batteryLevel: 30,
+    isActive: true,
+    lastMaintenance: new Date('2024-03-15'),
+    nextMaintenance: new Date('2024-06-15'),
+    coil: {
+      resistance: 0.9,
+      installedAt: new Date('2024-03-22'),
+      lifespan: 16
+    },
+    hardwareInfo: {
+      firmwareVersion: '2.0.8'
+    },
+    temperatureSettings: {
+      current: 185,
+      min: 100,
+      max: 270,
+    },
+    warranty: {
+      startDate: new Date('2024-03-01'),
+      endDate: new Date('2025-03-01'),
+      isActive: true,
+    },
+    status: 'active',
+  },
+  {
+    code: 'CLYPSE009',
+    serialNumber: 'SN0009',
+    model: 'Starter Kit Plus',
+    brand: 'Clyps',
+    batteryLevel: 95,
+    isActive: true,
+    lastMaintenance: new Date('2024-03-18'),
+    nextMaintenance: new Date('2024-06-18'),
+    coil: {
+      resistance: 1.2,
+      installedAt: new Date('2024-03-25'),
+      lifespan: 22
+    },
+    hardwareInfo: {
+      firmwareVersion: '1.8.0'
+    },
+    temperatureSettings: {
+      current: 175,
+      min: 100,
+      max: 240,
+    },
+    warranty: {
+      startDate: new Date('2024-03-05'),
+      endDate: new Date('2025-03-05'),
+      isActive: true,
+    },
+    status: 'active',
+  },
+  {
+    code: 'CLYPSE010',
+    serialNumber: 'SN0010',
+    model: 'Pro X Elite',
+    brand: 'Clyps',
+    batteryLevel: 80,
+    isActive: true,
+    lastMaintenance: new Date('2024-03-20'),
+    nextMaintenance: new Date('2024-06-20'),
+    coil: {
+      resistance: 0.5,
+      installedAt: new Date('2024-03-28'),
+      lifespan: 12
+    },
+    hardwareInfo: {
+      firmwareVersion: '2.3.0'
+    },
+    temperatureSettings: {
+      current: 225,
+      min: 100,
+      max: 310,
+    },
+    warranty: {
+      startDate: new Date('2024-03-10'),
+      endDate: new Date('2025-03-10'),
+      isActive: true,
+    },
+    status: 'active',
+  }
 ];
 
 const generateUniqueVapeCode = () => {

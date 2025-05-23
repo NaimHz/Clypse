@@ -3,7 +3,7 @@
     <div class="w-full max-w-md mx-auto px-4 py-8">
       <div class="text-center mb-12">
         <h1 class="text-4xl font-bold bg-gradient-to-r from-brand to-brand/80 bg-clip-text text-transparent mb-4">
-          Bienvenue sur Clypse
+          Bienvenue sur Clyps
         </h1>
         <p class="text-xl text-gray-300 max-w-lg mx-auto">
           Répondez à quelques questions pour personnaliser votre expérience
