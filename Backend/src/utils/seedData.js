@@ -298,18 +298,13 @@ const generateUniqueVapeCode = () => {
 
 const seedVapes = async () => {
   try {
-    // Vérifier si les vapes initiales existent déjà
-    const existingVapes = await Vape.find({
-      code: { $in: initialVapes.map(v => v.code) }
-    });
+    // Supprimer toutes les vapes existantes
+    await Vape.deleteMany({});
+    logger.info('Toutes les vapes existantes ont été supprimées.');
 
-    if (existingVapes.length === 0) {
-      logger.info('Seeding default vapes to the database...');
-      await Vape.insertMany(initialVapes);
-      logger.info('Default vapes seeded successfully');
-    } else {
-      logger.info(`Found ${existingVapes.length} existing vapes, skipping seed`);
-    }
+    // Insérer les vapes initiales
+    await Vape.insertMany(initialVapes);
+    logger.info('Default vapes seeded successfully');
   } catch (error) {
     logger.error('Error seeding vapes:', error);
     throw error; // Propager l'erreur pour la gérer au niveau supérieur
