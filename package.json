@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "chart.js": "^4.4.9"
-  },
-  "devDependencies": {
-    "vite-plugin-pwa": "^1.0.0"
-  }
-}
