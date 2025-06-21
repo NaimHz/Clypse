@@ -30,14 +30,14 @@ module.exports = router;
  * @swagger
  * tags:
  *   name: Vapes
- *   description: Vape management and retrieval
+ *   description: Gestion et récupération des vapes
  */
 /**
  * @swagger
  * /vapes:
  *   post:
- *     summary: Create a vape
- *     description: Only admins can create vapes.
+ *     summary: Créer une vape
+ *     description: Seuls les administrateurs peuvent créer des vapes.
  *     tags: [Vapes]
  *     security:
  *       - bearerAuth: []
@@ -56,17 +56,17 @@ module.exports = router;
  *               model:
  *                 type: string
  *             example:
- *               name: Vape Name
- *               model: Vape Model
+ *               name: Nom de la Vape
+ *               model: Modèle de la Vape
  *   get:
- *     summary: Get all vapes
+ *     summary: Récupérer toutes les vapes
  *     tags: [Vapes]
  */
 /**
  * @swagger
  * /vapes/{vapeId}:
  *   get:
- *     summary: Get a vape by ID
+ *     summary: Récupérer une vape par ID
  *     tags: [Vapes]
  *     parameters:
  *       - in: path
@@ -74,9 +74,9 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the vape
+ *         description: L'identifiant de la vape
  *   patch:
- *     summary: Update a vape by ID
+ *     summary: Mettre à jour une vape par ID
  *     tags: [Vapes]
  *     security:
  *       - bearerAuth: []
@@ -86,9 +86,9 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the vape to update
+ *         description: L'identifiant de la vape à mettre à jour
  *   delete:
- *     summary: Delete a vape by ID
+ *     summary: Supprimer une vape par ID
  *     tags: [Vapes]
  *     security:
  *       - bearerAuth: []
@@ -97,7 +97,7 @@ module.exports = router;
  * @swagger
  * /vapes/user/link:
  *   post:
- *     summary: Link a vape to the user
+ *     summary: Lier une vape à l'utilisateur
  *     tags: [Vapes]
  *     security:
  *       - bearerAuth: []
@@ -119,7 +119,7 @@ module.exports = router;
  * @swagger
  * /vapes/user/vapes:
  *   get:
- *     summary: Get all vapes linked to the user
+ *     summary: Récupérer toutes les vapes liées à l'utilisateur
  *     tags: [Vapes]
  *     security:
  *       - bearerAuth: []
@@ -128,7 +128,7 @@ module.exports = router;
  * @swagger
  * /vapes/user/{vapeId}/unlink:
  *   post:
- *     summary: Unlink a vape from the user
+ *     summary: Délier une vape de l'utilisateur
  *     tags: [Vapes]
  *     security:
  *       - bearerAuth: []
@@ -138,5 +138,5 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the vape to unlink
+ *         description: L'identifiant de la vape à délier
  */

@@ -22,17 +22,17 @@ module.exports = router;
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: User management and retrieval
+ *   name: Utilisateurs
+ *   description: Gestion et récupération des utilisateurs
  */
 
 /**
  * @swagger
  * /users:
  *   post:
- *     summary: Create a user
- *     description: Only admins can create other users.
- *     tags: [Users]
+ *     summary: Créer un utilisateur
+ *     description: Seuls les administrateurs peuvent créer d'autres utilisateurs.
+ *     tags: [Utilisateurs]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -52,23 +52,23 @@ module.exports = router;
  *               email:
  *                 type: string
  *                 format: email
- *                 description: must be unique
+ *                 description: doit être unique
  *               password:
  *                 type: string
  *                 format: password
  *                 minLength: 8
- *                 description: At least one number and one letter
+ *                 description: Au moins un chiffre et une lettre
  *               role:
  *                  type: string
  *                  enum: [user, admin]
  *             example:
- *               name: fake name
- *               email: fake@example.com
- *               password: password1
+ *               name: nom fictif
+ *               email: faux@example.com
+ *               password: motdepasse1
  *               role: user
  *     responses:
  *       "201":
- *         description: Created
+ *         description: Créé
  *         content:
  *           application/json:
  *             schema:
@@ -81,9 +81,9 @@ module.exports = router;
  *         $ref: '#/components/responses/Forbidden'
  *
  *   get:
- *     summary: Get all users
- *     description: Only admins can retrieve all users.
- *     tags: [Users]
+ *     summary: Obtenir tous les utilisateurs
+ *     description: Seuls les administrateurs peuvent récupérer tous les utilisateurs.
+ *     tags: [Utilisateurs]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -91,31 +91,31 @@ module.exports = router;
  *         name: name
  *         schema:
  *           type: string
- *         description: User name
+ *         description: Nom de l'utilisateur
  *       - in: query
  *         name: role
  *         schema:
  *           type: string
- *         description: User role
+ *         description: Rôle de l'utilisateur
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
- *         description: sort by query in the form of field:desc/asc (ex. name:asc)
+ *         description: Trier par champ sous la forme champ:desc/asc (ex. name:asc)
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           minimum: 1
  *         default: 10
- *         description: Maximum number of users
+ *         description: Nombre maximum d'utilisateurs
  *       - in: query
  *         name: page
  *         schema:
  *           type: integer
  *           minimum: 1
  *           default: 1
- *         description: Page number
+ *         description: Numéro de page
  *     responses:
  *       "200":
  *         description: OK
@@ -150,9 +150,9 @@ module.exports = router;
  * @swagger
  * /users/{id}:
  *   get:
- *     summary: Get a user
- *     description: Logged in users can fetch only their own user information. Only admins can fetch other users.
- *     tags: [Users]
+ *     summary: Obtenir un utilisateur
+ *     description: Les utilisateurs connectés ne peuvent récupérer que leurs propres informations. Seuls les administrateurs peuvent récupérer les autres utilisateurs.
+ *     tags: [Utilisateurs]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -161,7 +161,7 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: User id
+ *         description: Identifiant de l'utilisateur
  *     responses:
  *       "200":
  *         description: OK
@@ -177,9 +177,9 @@ module.exports = router;
  *         $ref: '#/components/responses/NotFound'
  *
  *   patch:
- *     summary: Update a user
- *     description: Logged in users can only update their own information. Only admins can update other users.
- *     tags: [Users]
+ *     summary: Mettre à jour un utilisateur
+ *     description: Les utilisateurs connectés ne peuvent mettre à jour que leurs propres informations. Seuls les administrateurs peuvent mettre à jour les autres utilisateurs.
+ *     tags: [Utilisateurs]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -188,7 +188,7 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: User id
+ *         description: Identifiant de l'utilisateur
  *     requestBody:
  *       required: true
  *       content:
@@ -201,16 +201,16 @@ module.exports = router;
  *               email:
  *                 type: string
  *                 format: email
- *                 description: must be unique
+ *                 description: doit être unique
  *               password:
  *                 type: string
  *                 format: password
  *                 minLength: 8
- *                 description: At least one number and one letter
+ *                 description: Au moins un chiffre et une lettre
  *             example:
- *               name: fake name
- *               email: fake@example.com
- *               password: password1
+ *               name: nom fictif
+ *               email: faux@example.com
+ *               password: motdepasse1
  *     responses:
  *       "200":
  *         description: OK
@@ -228,9 +228,9 @@ module.exports = router;
  *         $ref: '#/components/responses/NotFound'
  *
  *   delete:
- *     summary: Delete a user
- *     description: Logged in users can delete only themselves. Only admins can delete other users.
- *     tags: [Users]
+ *     summary: Supprimer un utilisateur
+ *     description: Les utilisateurs connectés ne peuvent se supprimer qu'eux-mêmes. Seuls les administrateurs peuvent supprimer d'autres utilisateurs.
+ *     tags: [Utilisateurs]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -239,10 +239,10 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: User id
+ *         description: Identifiant de l'utilisateur
  *     responses:
  *       "200":
- *         description: No content
+ *         description: Pas de contenu
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":

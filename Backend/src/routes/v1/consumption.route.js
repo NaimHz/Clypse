@@ -25,80 +25,74 @@ module.exports = router;
 /**
  * @swagger
  * tags:
- *   name: Consumption
- *   description: Consumption management
+ *   name: Consommation
+ *   description: Gestion de la consommation
  */
 /**
  * @swagger
  * /consumption:
  *   get:
- *     summary: Get user consumptions
- *     tags: [Consumption]
+ *     summary: Obtenir les consommations de l'utilisateur
+ *     tags: [Consommation]
  *     responses:
  *       '200':
- *         description: User consumptions retrieved successfully
+ *         description: Consommations de l'utilisateur récupérées avec succès
  */
 /**
  * @swagger
  * /consumption/vape/{vapeId}:
  *   get:
- *     summary: Get consumption for a specific vape
- *     tags: [Consumption]
+ *     summary: Obtenir la consommation pour une vape spécifique
+ *     tags: [Consommation]
  *     parameters:
  *       - in: path
  *         name: vapeId
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the vape
+ *         description: L'identifiant de la vape
  *     responses:
  *       '200':
- *         description: Consumption data retrieved successfully
+ *         description: Données de consommation récupérées avec succès
  */
 /**
  * @swagger
  * /consumption/vape/{vapeId}/puff:
  *   post:
- *     summary: Record a puff for a specific vape
- *     tags: [Consumption]
+ *     summary: Enregistrer une bouffée pour une vape spécifique
+ *     tags: [Consommation]
  *     parameters:
  *       - in: path
  *         name: vapeId
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the vape
+ *         description: L'identifiant de la vape
  *     responses:
  *       '201':
- *         description: Puff recorded successfully
+ *         description: Bouffée enregistrée avec succès
  */
 /**
  * @swagger
  * /consumption/vape/{vapeId}/stats/daily:
  *   get:
- *     summary: Get daily stats for a specific vape
- *     tags: [Consumption]
+ *     summary: Obtenir les statistiques journalières pour une vape spécifique
+ *     tags: [Consommation]
  *     parameters:
  *       - in: path
  *         name: vapeId
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the vape
+ *         description: L'identifiant de la vape
  *       - in: query
  *         name: date
  *         required: false
  *         schema:
  *           type: string
  *           format: date
- *         description: The date for which to retrieve stats (defaults to today)
+ *         description: La date pour laquelle récupérer les statistiques (par défaut aujourd'hui)
  *     responses:
  *       '200':
- *         description: Daily stats retrieved successfully
+ *         description: Statistiques journalières récupérées avec succès
  */
-//         - in: query
-//         name: password
-//         required: true
-//         schema:
-//           type: string
-//         description: The new password                

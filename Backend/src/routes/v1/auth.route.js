@@ -22,14 +22,14 @@ module.exports = router;
  * @swagger
  * tags:
  *   name: Auth
- *   description: Authentication
+ *   description: Authentification
  */
 
 /**
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Register as user
+ *     summary: S'inscrire en tant qu'utilisateur
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -47,19 +47,19 @@ module.exports = router;
  *               email:
  *                 type: string
  *                 format: email
- *                 description: must be unique
+ *                 description: doit être unique
  *               password:
  *                 type: string
  *                 format: password
  *                 minLength: 8
- *                 description: At least one number and one letter
+ *                 description: Au moins un chiffre et une lettre
  *             example:
- *               name: fake name
+ *               name: nom fictif
  *               email: fake@example.com
- *               password: password1
+ *               password: motdepasse1
  *     responses:
  *       "201":
- *         description: Created
+ *         description: Créé
  *         content:
  *           application/json:
  *             schema:
@@ -77,7 +77,7 @@ module.exports = router;
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Login
+ *     summary: Connexion
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -97,7 +97,7 @@ module.exports = router;
  *                 format: password
  *             example:
  *               email: fake@example.com
- *               password: password1
+ *               password: motdepasse1
  *     responses:
  *       "200":
  *         description: OK
@@ -111,21 +111,21 @@ module.exports = router;
  *                 tokens:
  *                   $ref: '#/components/schemas/AuthTokens'
  *       "401":
- *         description: Invalid email or password
+ *         description: Email ou mot de passe invalide
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
  *               code: 401
- *               message: Invalid email or password
+ *               message: Email ou mot de passe invalide
  */
 
 /**
  * @swagger
  * /auth/logout:
  *   post:
- *     summary: Logout
+ *     summary: Déconnexion
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -142,7 +142,7 @@ module.exports = router;
  *               refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWJhYzUzNDk1NGI1NDEzOTgwNmMxMTIiLCJpYXQiOjE1ODkyOTg0ODQsImV4cCI6MTU4OTMwMDI4NH0.m1U63blB0MLej_WfB7yC2FTMnCziif9X8yzwDEfJXAg
  *     responses:
  *       "204":
- *         description: No content
+ *         description: Pas de contenu
  *       "404":
  *         $ref: '#/components/responses/NotFound'
  */
@@ -151,7 +151,7 @@ module.exports = router;
  * @swagger
  * /auth/refresh-tokens:
  *   post:
- *     summary: Refresh auth tokens
+ *     summary: Rafraîchir les jetons d'authentification
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -181,8 +181,8 @@ module.exports = router;
  * @swagger
  * /auth/forgot-password:
  *   post:
- *     summary: Forgot password
- *     description: An email will be sent to reset password.
+ *     summary: Mot de passe oublié
+ *     description: Un email sera envoyé pour réinitialiser le mot de passe.
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -200,7 +200,7 @@ module.exports = router;
  *               email: fake@example.com
  *     responses:
  *       "204":
- *         description: No content
+ *         description: Pas de contenu
  *       "404":
  *         $ref: '#/components/responses/NotFound'
  */
@@ -209,7 +209,7 @@ module.exports = router;
  * @swagger
  * /auth/reset-password:
  *   post:
- *     summary: Reset password
+ *     summary: Réinitialiser le mot de passe
  *     tags: [Auth]
  *     parameters:
  *       - in: query
@@ -217,7 +217,7 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: The reset password token
+ *         description: Le jeton de réinitialisation du mot de passe
  *     requestBody:
  *       required: true
  *       content:
@@ -231,35 +231,35 @@ module.exports = router;
  *                 type: string
  *                 format: password
  *                 minLength: 8
- *                 description: At least one number and one letter
+ *                 description: Au moins un chiffre et une lettre
  *             example:
- *               password: password1
+ *               password: motdepasse1
  *     responses:
  *       "204":
- *         description: No content
+ *         description: Pas de contenu
  *       "401":
- *         description: Password reset failed
+ *         description: Échec de la réinitialisation du mot de passe
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
  *               code: 401
- *               message: Password reset failed
+ *               message: Échec de la réinitialisation du mot de passe
  */
 
 /**
  * @swagger
  * /auth/send-verification-email:
  *   post:
- *     summary: Send verification email
- *     description: An email will be sent to verify email.
+ *     summary: Envoyer un email de vérification
+ *     description: Un email sera envoyé pour vérifier l'adresse email.
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       "204":
- *         description: No content
+ *         description: Pas de contenu
  *       "401":
  *         $ref: '#/components/responses/Unauthorized'
  */
@@ -268,7 +268,7 @@ module.exports = router;
  * @swagger
  * /auth/verify-email:
  *   post:
- *     summary: verify email
+ *     summary: Vérifier l'email
  *     tags: [Auth]
  *     parameters:
  *       - in: query
@@ -276,17 +276,18 @@ module.exports = router;
  *         required: true
  *         schema:
  *           type: string
- *         description: The verify email token
+ *         description: Le jeton de vérification d'email
  *     responses:
  *       "204":
- *         description: No content
+ *         description: Pas de contenu
  *       "401":
- *         description: verify email failed
+ *         description: Échec de la vérification de l'email
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *             example:
  *               code: 401
- *               message: verify email failed
+ *               message: Échec de la vérification de l'email
  */
+
