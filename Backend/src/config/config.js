@@ -38,9 +38,11 @@ module.exports = {
   port: envVars.PORT,
   address: envVars.ADDRESS,
   mongoose: {
-    url: envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
-    options: {
-    },
+    url:
+      envVars.MONGODB_URL.startsWith('mongodb+srv://')
+        ? envVars.MONGODB_URL
+        : envVars.MONGODB_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
+    options: {},
   },
   jwt: {
     secret: envVars.JWT_SECRET,
