@@ -7,7 +7,6 @@ let expect;
 
 before(async function () {
   ({ expect } = await import('chai'));
-  await mongoose.connect(config.mongoose.url, config.mongoose.options);
 });
 
 describe("Inscription et Suppression d'Utilisateur", function () {

@@ -10,7 +10,6 @@ describe('CRUD de Vape', function () {
 
   before(async function () {
     ({ expect } = await import('chai'));
-    await mongoose.connect(config.mongoose.url, config.mongoose.options);
 
     const adminEmail = `admin_${Date.now()}@example.com`;
     const adminPassword = 'Password123!';
@@ -46,5 +45,12 @@ describe('CRUD de Vape', function () {
 
     const vapeInDb = await Vape.findById(vapeId);
     expect(vapeInDb).to.be.null;
+  });
+
+  after(async function () {
+    const adminUser = await User.findOne({ email: { $regex: /^admin_/ } });
+    if (adminUser) {
+      await User.findByIdAndDelete(adminUser.id);
+    }
   });
 });
