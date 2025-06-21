@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: Backend/package-lock.json
+        cache-dependency-path: Backend/package.json
 
     - name: Install dependencies
       run: npm install
